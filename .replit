@@ -1,0 +1,52 @@
+modules = ["php"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Prestashop Module Server"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "prestashop_module_check"
+
+[[workflows.workflow]]
+name = "Prestashop Module Server"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "php -S 0.0.0.0:5000 -t currencyselectorpopup"
+waitForPort = 5000
+
+[[workflows.workflow]]
+name = "prestashop_module_check"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "ls -la currencyselectorpopup/"
+
+[deployment]
+run = ["sh", "-c", "php -S 0.0.0.0:5000 -t currencyselectorpopup"]
